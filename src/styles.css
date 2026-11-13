@@ -1,48 +1,112 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap');
+* {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
 
-:root { font-family: 'DM Sans', sans-serif; color: #1e2922; background: #f4f6f1; font-synthesis: none; }
-* { box-sizing: border-box; }
-body { margin: 0; min-width: 320px; min-height: 100vh; }
-button, input { font: inherit; }
-.page-shell { min-height: 100vh; padding: 36px 24px; display: grid; place-items: center; background: radial-gradient(ellipse at 15% 5%, #e8eee6 0, transparent 38%), #f4f6f1; }
-.weather-app { width: min(100%, 760px); min-height: 680px; padding: 30px 54px 24px; background: #fff; box-shadow: 0 26px 80px #243a2812; display: flex; flex-direction: column; }
-.topline, footer { display: flex; align-items: center; justify-content: space-between; color: #657168; font: 500 10px 'DM Mono', monospace; letter-spacing: .11em; }
-.topline { border-bottom: 1px solid #e9ede8; padding-bottom: 20px; }
-.brand-mark { color: #315f4c; font-size: 15px; margin-right: -16px; }
-.topline i, footer i { color: #a1aaa2; font-style: normal; padding: 0 4px; }
-.live-label { display: flex; align-items: center; gap: 8px; }
-.live-label span { width: 6px; height: 6px; border-radius: 50%; background: #77a87d; box-shadow: 0 0 0 3px #77a87d22; }
-.intro { margin: 54px 0 34px; }
-.eyebrow, .search label { margin: 0; color: #718078; font: 500 10px 'DM Mono', monospace; letter-spacing: .12em; }
-h1 { margin: 12px 0 12px; font-size: clamp(42px, 7vw, 64px); line-height: .99; letter-spacing: -.055em; font-weight: 500; }
-h1 em { color: #527760; font-family: 'Playfair Display', serif; font-weight: 500; }
-.lede { color: #778079; margin: 18px 0 0; font-size: 14px; }
-.search label { display: block; margin-bottom: 10px; }
-.search-row { display: flex; border: 1px solid #dfe5df; background: #fbfcfa; height: 54px; }
-.search input { min-width: 0; flex: 1; padding: 0 16px; border: 0; outline: 0; color: #1e2922; background: transparent; font-size: 14px; }
-.search input::placeholder { color: #a0a9a1; }
-.search-row:focus-within { border-color: #75937e; box-shadow: 0 0 0 3px #52776013; }
-.search button { border: 0; margin: 5px; padding: 0 17px; display: flex; gap: 9px; align-items: center; color: #fff; background: #315f4c; cursor: pointer; font-size: 12px; font-weight: 600; }
-.search button:hover { background: #244c3b; }
-.search button:disabled { opacity: .7; cursor: wait; }
-.result { flex: 1; min-height: 230px; display: flex; flex-direction: column; justify-content: center; }
-.hint { text-align: center; color: #9aa39b; font-size: 12px; }
-.message { display: flex; justify-content: center; align-items: center; gap: 9px; text-align: center; font-size: 13px; }
-.error { color: #a5453d; }
-.loading { display: flex; align-items: center; justify-content: center; gap: 12px; color: #78847b; font-size: 12px; }
-.forecast { border-top: 1px solid #e9ede8; padding-top: 24px; }
-.forecast-heading { display: flex; justify-content: space-between; align-items: center; }
-h2 { margin: 8px 0 4px; font-size: 26px; font-weight: 500; letter-spacing: -.04em; }
-h2 span { color: #89938b; font-weight: 400; }
-.date { margin: 0; color: #89938b; font-size: 12px; }
-.weather-icon { width: 76px; height: 76px; }
-.conditions { margin-top: 8px; padding: 20px 0 8px; border-top: 1px solid #eef1ed; display: flex; align-items: center; gap: 36px; }
-.temperature { font-size: 70px; letter-spacing: -.08em; line-height: 1; font-weight: 500; }
-.temperature sup { font-size: 22px; letter-spacing: -.03em; vertical-align: top; margin: 9px 0 0 5px; }
-.condition-detail { color: #778079; font-size: 12px; }
-.condition-detail p { margin: 8px 0; }
-.condition-detail svg { width: 14px; margin-right: 8px; color: #668571; }
-.condition-detail strong { color: #28352c; font-weight: 600; margin-left: 4px; }
-.condition-detail .sky { text-transform: capitalize; font-size: 14px; color: #28352c; margin-bottom: 11px; }
-footer { border-top: 1px solid #e9ede8; padding-top: 17px; font-size: 9px; }
-@media (max-width: 600px) { .page-shell { padding: 12px; align-items: stretch; } .weather-app { min-height: calc(100vh - 24px); padding: 22px 22px 18px; } .topline { font-size: 8px; } .brand-mark { margin-right: -9px; } .live-label { font-size: 8px; } .intro { margin-top: 46px; } .conditions { gap: 24px; } .temperature { font-size: 58px; } footer { font-size: 7px; letter-spacing: .06em; } }
+html {
+  min-height: 100%;
+  background-color: #f7f7f7;
+}
+
+body {
+  margin: 0;
+}
+
+.app-name {
+  font-size: 2.3rem;
+  color: rgb(17, 144, 0);
+  margin-bottom: 16px;
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: min(600px, calc(100% - 48px));
+  min-height: 440px;
+  background-color: #fff;
+  text-align: center;
+  margin: 128px auto;
+  border-radius: 10px;
+  padding: 0 24px 32px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.city-search {
+  width: 100%;
+  max-width: 400px;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  outline: none;
+  border-radius: 20px;
+  font-size: 16px;
+  background-color: #e5eef0;
+  padding: 12px 40px;
+  transition: width 0.4s ease-in-out;
+  color: #333;
+}
+
+.city-search:focus {
+  width: 100%;
+}
+
+.city-name {
+  font-size: 1.5rem;
+  color: #444;
+  margin-bottom: 8px;
+}
+
+.date {
+  font-size: 1.25em;
+  font-weight: 500;
+  color: #777;
+}
+
+.icon-temp {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #1e2432;
+  text-align: center;
+}
+
+.deg {
+  font-size: 1.3rem;
+  vertical-align: super;
+}
+
+.des-wind {
+  font-weight: 500;
+  color: #666;
+}
+
+.error-message {
+  display: block;
+  text-align: center;
+  color: #d32f2f;
+  font-size: 24px;
+  margin-top: auto;
+}
+
+.Loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.Loader > div {
+  margin: 0 auto;
+}
+
+.weather-icon {
+  width: 100px;
+  height: 100px;
+  vertical-align: middle;
+}
+
+@media (max-width: 600px) {
+  .App {
+    margin: 32px auto;
+  }
+}

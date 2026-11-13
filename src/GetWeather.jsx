@@ -1,117 +1,86 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { Oval } from 'react-loader-spinner';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCloud, faFrown, faMagnifyingGlass, faWind } from '@fortawesome/free-solid-svg-icons';
+import { faFrown } from '@fortawesome/free-solid-svg-icons';
+import './styles.css';
 
 const weatherUrl = 'https://api.openweathermap.org/data/2.5/weather';
 const apiKey = import.meta.env.VITE_OPENWEATHER_API_KEY;
 
-function formatDate(date) {
-  return new Intl.DateTimeFormat('en-US', {
+function GetWeather() {
+  const [input, setInput] = useState('');
+  const [weather, setWeather] = useState({ loading: false, data: {}, error: false });
+
+  const currentDateFunction = () => new Intl.DateTimeFormat('en-US', {
     weekday: 'long',
     month: 'long',
     day: 'numeric',
-  }).format(date);
-}
+  }).format(new Date());
 
-export default function GetWeather() {
-  const [city, setCity] = useState('');
-  const [weather, setWeather] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-
-  async function search(event) {
+  const fetchWeather = async (event) => {
+    if (event.key !== 'Enter') return;
     event.preventDefault();
-    const query = city.trim();
-    if (!query || loading) return;
-    if (!apiKey) {
-      setError('Add your OpenWeatherMap API key to .env.local to search.');
-      return;
-    }
+    const city = input.trim();
+    if (!city || weather.loading) return;
+    setWeather({ loading: true, data: {}, error: false });
 
-    setLoading(true);
-    setError('');
-    setWeather(null);
     try {
       const { data } = await axios.get(weatherUrl, {
-        params: { q: query, units: 'imperial', appid: apiKey },
+        params: { q: city, units: 'imperial', appid: apiKey },
       });
-      setWeather(data);
-      setCity('');
-    } catch (err) {
-      setError(err.response?.status === 404 ? 'City not found. Check the spelling and try again.' : 'Weather could not be loaded. Try again shortly.');
-    } finally {
-      setLoading(false);
+      setWeather({ data, loading: false, error: false });
+      setInput('');
+    } catch {
+      setWeather({ loading: false, data: {}, error: true });
     }
-  }
+  };
 
   return (
-    <main className="page-shell">
-      <section className="weather-app" aria-label="City weather search">
-        <header className="topline">
-          <span className="brand-mark"><FontAwesomeIcon icon={faCloud} /></span>
-          <span>FIELD NOTES <i>/</i> WEATHER</span>
-          <span className="live-label"><span /> LIVE CONDITIONS</span>
-        </header>
-
-        <div className="intro">
-          <p className="eyebrow">A little closer to outside</p>
-          <h1>Weather,<br /><em>where you are.</em></h1>
-          <p className="lede">Current conditions for any city around the world.</p>
-        </div>
-
-        <form className="search" onSubmit={search}>
-          <label htmlFor="city">CITY OR PLACE</label>
-          <div className="search-row">
-            <input
-              id="city"
-              type="search"
-              placeholder="Try San Francisco"
-              value={city}
-              onChange={(event) => setCity(event.target.value)}
-              autoComplete="off"
-              required
-            />
-            <button type="submit" disabled={loading} aria-label="Search weather">
-              <FontAwesomeIcon icon={faMagnifyingGlass} />
-              <span>{loading ? 'Searching' : 'Search'}</span>
-            </button>
+    <div className="App">
+      <h1 className="app-name">Weather App</h1>
+      <div className="search-bar">
+        <input
+          type="text"
+          className="city-search"
+          placeholder="Enter city name..."
+          name="query"
+          value={input}
+          onChange={(event) => setInput(event.target.value)}
+          onKeyDown={fetchWeather}
+        />
+      </div>
+      {weather.loading && (
+        <div className="Loader"><Oval height={100} width={100} color="black" ariaLabel="Loading weather" /></div>
+      )}
+      {weather.error && (
+        <span className="error-message">
+          <FontAwesomeIcon icon={faFrown} /> <span style={{ fontSize: '20px' }}>City not found</span>
+        </span>
+      )}
+      {weather.data.main && (
+        <div>
+          <div className="city-name">
+            <h2>{weather.data.name}, <span>{weather.data.sys.country}</span></h2>
           </div>
-        </form>
-
-        <div className="result" aria-live="polite" aria-busy={loading}>
-          {loading && <div className="loading"><Oval height={34} width={34} color="#315f4c" secondaryColor="#dce5dc" strokeWidth={4} ariaLabel="Loading weather" /><span>Finding current conditions</span></div>}
-          {error && <p className="message error"><FontAwesomeIcon icon={faFrown} /> {error}</p>}
-          {weather && (
-            <article className="forecast">
-              <div className="forecast-heading">
-                <div>
-                  <p className="eyebrow">CURRENT CONDITIONS</p>
-                  <h2>{weather.name}<span>, {weather.sys.country}</span></h2>
-                  <p className="date">{formatDate(new Date())}</p>
-                </div>
-                <img
-                  className="weather-icon"
-                  src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
-                  alt={weather.weather[0].description}
-                />
-              </div>
-              <div className="conditions">
-                <div className="temperature">{Math.round(weather.main.temp)}<sup>°F</sup></div>
-                <div className="condition-detail">
-                  <p className="sky">{weather.weather[0].description}</p>
-                  <p><FontAwesomeIcon icon={faWind} /> Wind <strong>{Math.round(weather.wind.speed)} mph</strong></p>
-                  <p><FontAwesomeIcon icon={faCloud} /> Cloud cover <strong>{weather.clouds.all}%</strong></p>
-                </div>
-              </div>
-            </article>
-          )}
-          {!loading && !weather && !error && <p className="hint">Search a city to see its weather.</p>}
+          <div className="date"><span>{currentDateFunction()}</span></div>
+          <div className="icon-temp">
+            <img
+              className="weather-icon"
+              src={`https://openweathermap.org/img/wn/${weather.data.weather[0].icon}@2x.png`}
+              alt={weather.data.weather[0].description}
+            />
+            {Math.round(weather.data.main.temp)}
+            <sup className="deg">°F</sup>
+          </div>
+          <div className="des-wind">
+            <p>{weather.data.weather[0].description}</p>
+            <p>Wind Speed: {Math.round(weather.data.wind.speed)} mph</p>
+          </div>
         </div>
-
-        <footer><span>OPENWEATHERMAP DATA</span><span>MEASURED IN °F <i>·</i> WIND IN MPH</span></footer>
-      </section>
-    </main>
+      )}
+    </div>
   );
 }
+
+export default GetWeather;
